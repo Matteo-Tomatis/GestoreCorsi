@@ -5,8 +5,13 @@
 package it.polito.tdp.corsi;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.corsi.model.Corso;
+import it.polito.tdp.corsi.model.Divisione;
 import it.polito.tdp.corsi.model.Model;
+import it.polito.tdp.corsi.model.Studente;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -46,7 +51,29 @@ public class FXMLController {
 
     @FXML
     void corsiPerPeriodo(ActionEvent event) {
+    	String input = txtPeriodo.getText();
+    	int inputNum = 0;
     	
+    	try {
+    	inputNum = Integer.parseInt(input);
+
+    	} catch (NumberFormatException e) {
+    		txtRisultato.setText("Invalid value");
+    	}
+    	
+    	if(inputNum<1 || inputNum>2) {
+    		txtRisultato.setText("Inserted 1 or 2");
+    		return;
+    	} 
+    	
+    	List<Corso> result = model.getCorsiByPeriodo(inputNum);
+    	
+    	txtRisultato.clear();
+    	txtRisultato.setText("Ho trovato " + result.size() + " corsi. \n");
+    	
+    	for(Corso c : result) {
+    		txtRisultato.appendText("\n"+c.getCod() + " " + c.getNome() + " " + c.getCrd());
+    	}
     }
 
     @FXML
@@ -56,12 +83,31 @@ public class FXMLController {
 
     @FXML
     void stampaDivisione(ActionEvent event) {
+    	String codins = this.txtCorso.getText();
+    	
+    	if(codins.isEmpty())
+    		this.txtRisultato.setText("Inserire un corso");
+    	
+    	List<Divisione> risultato = this.model.getDivisione(codins);
+    	
+    	this.txtRisultato.clear();
+    	for(Divisione d : risultato)
+    		this.txtRisultato.appendText(d.toString() + "\n");
 
     }
 
     @FXML
     void stampaStudenti(ActionEvent event) {
-
+    	String codins = this.txtCorso.getText();
+    	
+    	if(codins.isEmpty())
+    		this.txtRisultato.setText("Inserire un corso");
+    	
+    	List<Studente> risultato = this.model.getStudentiByCorso(codins);
+    	
+    	this.txtRisultato.clear();
+    	for(Studente s : risultato)
+    		this.txtRisultato.appendText(s.toString() + "\n");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
